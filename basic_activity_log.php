@@ -16,7 +16,7 @@ $startWeight = $defaultData[1];
 $startBMI = $defaultData[2];
 $units = $defaultData[3];
 
-$displayWeight = ($units == 'LB') ? KilosToPounds($startWeight) : $startWeight;
+$displayWeight = ($units == 'LB') ? $startWeight : $startWeight;
 $displayWeightUnit = ($units == 'LB') ? 'lbs' : 'kg';
 
 $activityData = LoadActivityRecords();
@@ -31,14 +31,31 @@ foreach ($activityData as $line) {
     if (count($parts) == 5) {
         $totalDuration += floatval($parts[1]);
         $totalCalories += floatval($parts[2]);
-        $totalWeightLoss += floatval($parts[3]);
+
+        // Handle weight loss based on recorded unit
+        $weightLost = floatval($parts[3]);
+        $recordUnit = trim($parts[4]);
+
+        // Keep the weight loss in its original unit
+        $totalWeightLoss += ($recordUnit == $units) ? $weightLost : ($units == 'LB' ? KilosToPounds($weightLost) : PoundsToKilos($weightLost));
     }
 }
 
+$displayWeightLoss = $totalWeightLoss;
+
+
+
 $newWeight = $startWeight - $totalWeightLoss;
-$newBMI = BMICalculator($newWeight, $startHeight);
-$displayWeightLoss = ($units == 'LB') ? KilosToPounds($totalWeightLoss) : $totalWeightLoss;
-$displayNewWeight = ($units == 'LB') ? KilosToPounds($newWeight) : $newWeight;
+$displayNewWeight = $newWeight;
+// Add the unit conversion here
+if ($units == 'LB') {
+    $weightInKg = PoundsToKilos($newWeight);
+    $heightInMeters = FeetToMeter($startHeight);
+    $newBMI = BMICalculator($weightInKg, $heightInMeters);
+} else {
+    $newBMI = BMICalculator($newWeight, $startHeight);
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -244,7 +261,7 @@ $displayNewWeight = ($units == 'LB') ? KilosToPounds($newWeight) : $newWeight;
                 <div class="col-md-6">
                     <div class="stat-card">
                         <i class="fas fa-chart-line stat-icon"></i>
-                        <div class="stat-title">Current BMI</div>
+                        <div class="stat-title">New BMI</div>
                         <div class="stat-value"><?php echo round($newBMI, 2); ?></div>
                         <div class="stat-trend">
                             <i class="fas fa-arrow-up trend-up"></i>

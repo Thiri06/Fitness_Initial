@@ -29,29 +29,49 @@ $activityData = LoadActivityRecords();
 $totalDuration = 0;
 $totalCalories = 0;
 $totalWeightLoss = 0;
+
 foreach ($activityData as $line) {
     $parts = explode(", ", $line);
     if (count($parts) == 5) {
         $duration = floatval($parts[1]);
         $calories = floatval($parts[2]);
         $weightLost = floatval($parts[3]);
+        $recordUnit = trim($parts[4]);
+
+        // Convert weight loss based on recorded and display units
+        if ($recordUnit == 'LB' && $units == 'KG') {
+            $weightLost = PoundsToKilos($weightLost);
+        } else if ($recordUnit == 'KG' && $units == 'LB') {
+            $weightLost = KilosToPounds($weightLost);
+        }
+
         $totalDuration += $duration;
         $totalCalories += $calories;
         $totalWeightLoss += $weightLost;
     }
 }
 
+// Calculate new weight and BMI
+$newWeight = $startWeight - $totalWeightLoss;
+
+// Calculate new BMI with proper unit conversions
+if ($units == 'LB') {
+    $weightInKg = PoundsToKilos($newWeight);
+    $heightInMeters = FeetToMeter($startHeight);
+    $displayBMI = BMICalculator($weightInKg, $heightInMeters);
+} else {
+    $displayBMI = BMICalculator($newWeight, $startHeight);
+}
+
 // Convert stats if units are in pounds
 if ($units == 'LB') {
-    $displayWeight = KilosToPounds($startWeight);
+    $displayWeight = $startWeight;
     $displayHeight = MeterToFeet($startHeight);
-    $displayWeightLoss = KilosToPounds($totalWeightLoss);
-    $displayBMI = $startBMI; // Use stored BMI directly
+    $displayWeightLoss = $totalWeightLoss;
 } else {
     $displayWeight = $startWeight;
     $displayHeight = $startHeight;
     $displayWeightLoss = $totalWeightLoss;
-    $displayBMI = $startBMI;
 }
 ?>
 
@@ -356,7 +376,12 @@ if ($units == 'LB') {
                         $record = explode(", ", trim($line));
                         if (count($record) == 5):
                             $weightLost = floatval($record[3]);
-                            if ($units == 'LB') {
+                            $recordUnit = trim($record[4]);
+
+                            // Convert weight loss based on recorded and display units
+                            if ($recordUnit == 'LB' && $units == 'KG') {
+                                $weightLost = PoundsToKilos($weightLost);
+                            } else if ($recordUnit == 'KG' && $units == 'LB') {
                                 $weightLost = KilosToPounds($weightLost);
                             }
                         ?>
