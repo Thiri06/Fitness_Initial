@@ -1,57 +1,88 @@
 <?php
+include 'common.php';
+
 $conversionResult = ""; // Variable to store conversion result
 
+// if ($_SERVER["REQUEST_METHOD"] == "POST") {
+//     $amount = floatval($_POST["amount"]);
+//     $conversionType = $_POST["conversion_type"];
+
+//     $apiKey = '47aa2183f5msh38cd0fce4a47025p1d3e85jsn3e3ea4b8426c'; // Replace with your actual API key
+
+//     // Set API URL based on user selection
+//     if ($conversionType == "kg_to_lb") {
+//         $url = "https://unit-measurement-conversion.p.rapidapi.com/convert?type=weight&fromUnit=kilogram&toUnit=pound&fromValue=$amount";
+//     } elseif ($conversionType == "lb_to_kg") {
+//         $url = "https://unit-measurement-conversion.p.rapidapi.com/convert?type=weight&fromUnit=pound&toUnit=kilogram&fromValue=$amount";
+//     } elseif ($conversionType == "m_to_ft") {
+//         $url = "https://unit-measurement-conversion.p.rapidapi.com/convert?type=length&fromUnit=meter&toUnit=feet&fromValue=$amount";
+//     } else {
+//         $url = "https://unit-measurement-conversion.p.rapidapi.com/convert?type=length&fromUnit=feet&toUnit=meter&fromValue=$amount";
+//     }
+
+
+//     // Call API using cURL
+//     $curl = curl_init();
+//     curl_setopt_array($curl, [
+//         CURLOPT_URL => $url,
+//         CURLOPT_RETURNTRANSFER => true,
+//         CURLOPT_SSL_VERIFYPEER => false, // 🔥 Disable SSL verification
+//         CURLOPT_SSL_VERIFYHOST => false, // 🔥 Disable SSL hostname verification
+//         CURLOPT_HTTPHEADER => [
+//             "X-RapidAPI-Key: $apiKey",
+//             "X-RapidAPI-Host: unit-measurement-conversion.p.rapidapi.com"
+//         ]
+//     ]);
+
+
+//     $response = curl_exec($curl);
+//     $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE); // ✅ Fix: Properly get HTTP response code
+//     $curlError = curl_error($curl); // Check for cURL errors
+//     curl_close($curl);
+
+
+
+//     // Decode JSON response
+//     $data = json_decode($response, true);
+
+//     // Display conversion result
+//     if ($httpCode == 200 && isset($data['value'])) {
+//         $conversionResult = "$amount " .
+//             ($conversionType == "kg_to_lb" ? "kg" : ($conversionType == "lb_to_kg" ? "lb" : ($conversionType == "m_to_ft" ? "m" : "ft"))) .
+//             " = " . $data['value'] . " " . $data['abbreviation'];
+//     } else {
+//         $conversionResult = "Conversion error. Please try again.";
+//     }
+// }
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $amount = floatval($_POST["amount"]);
     $conversionType = $_POST["conversion_type"];
 
-    $apiKey = '47aa2183f5msh38cd0fce4a47025p1d3e85jsn3e3ea4b8426c'; // Replace with your actual API key
-
-    // Set API URL based on user selection
-    if ($conversionType == "kg_to_lb") {
-        $url = "https://unit-measurement-conversion.p.rapidapi.com/convert?type=weight&fromUnit=kilogram&toUnit=pound&fromValue=$amount";
-    } elseif ($conversionType == "lb_to_kg") {
-        $url = "https://unit-measurement-conversion.p.rapidapi.com/convert?type=weight&fromUnit=pound&toUnit=kilogram&fromValue=$amount";
-    } elseif ($conversionType == "m_to_ft") {
-        $url = "https://unit-measurement-conversion.p.rapidapi.com/convert?type=length&fromUnit=meter&toUnit=feet&fromValue=$amount";
-    } else {
-        $url = "https://unit-measurement-conversion.p.rapidapi.com/convert?type=length&fromUnit=feet&toUnit=meter&fromValue=$amount";
+    // Use the existing API functions with proper formatting
+    switch ($conversionType) {
+        case "kg_to_lb":
+            $result = kilosToPoundsWebService($amount);
+            $conversionResult = "$amount kg = $result";
+            break;
+        case "lb_to_kg":
+            $result = poundsToKilosWebService($amount);
+            $conversionResult = "$amount lb = $result";
+            break;
+        case "m_to_ft":
+            $result = metersToFeetWebService($amount);
+            $conversionResult = "$amount m = $result";
+            break;
+        case "ft_to_m":
+            $result = feetToMetersWebService($amount);
+            $conversionResult = "$amount ft = $result";
+            break;
     }
 
-
-    // Call API using cURL
-    $curl = curl_init();
-    curl_setopt_array($curl, [
-        CURLOPT_URL => $url,
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_SSL_VERIFYPEER => false, // 🔥 Disable SSL verification
-        CURLOPT_SSL_VERIFYHOST => false, // 🔥 Disable SSL hostname verification
-        CURLOPT_HTTPHEADER => [
-            "X-RapidAPI-Key: $apiKey",
-            "X-RapidAPI-Host: unit-measurement-conversion.p.rapidapi.com"
-        ]
-    ]);
-
-
-    $response = curl_exec($curl);
-    $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE); // ✅ Fix: Properly get HTTP response code
-    $curlError = curl_error($curl); // Check for cURL errors
-    curl_close($curl);
-
-
-
-    // Decode JSON response
-    $data = json_decode($response, true);
-
-    // Display conversion result
-    if ($httpCode == 200 && isset($data['value'])) {
-        $conversionResult = "$amount " .
-            ($conversionType == "kg_to_lb" ? "kg" : ($conversionType == "lb_to_kg" ? "lb" : ($conversionType == "m_to_ft" ? "m" : "ft"))) .
-            " = " . $data['value'] . " " . $data['abbreviation'];
-    } else {
+    if (!$result || $result == "Conversion error") {
         $conversionResult = "Conversion error. Please try again.";
     }
 }
+
 ?>
 
 <!DOCTYPE html>

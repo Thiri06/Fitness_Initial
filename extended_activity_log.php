@@ -15,9 +15,13 @@ $displayWeightUnit = ($units == 'LB') ? 'LB' : 'KG';
 
 // Extended calculations
 $avgCalories = calculateAverageCaloriesBurned();
+
 $maxCaloriesData = findLargestCaloriesBurned();
+
 $biggestInterval = findBiggestWeightLossInterval($units);
+
 $displayInterval = ($units == 'LB') ? KilosToPounds($biggestInterval) : $biggestInterval;
+
 ?>
 
 <!DOCTYPE html>

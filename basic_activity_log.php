@@ -44,7 +44,6 @@ foreach ($activityData as $line) {
 $displayWeightLoss = $totalWeightLoss;
 
 
-
 $newWeight = $startWeight - $totalWeightLoss;
 $displayNewWeight = $newWeight;
 // Add the unit conversion here

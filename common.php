@@ -188,26 +188,26 @@ function findBiggestWeightLossInterval()
 function kilosToPoundsWebService($weightInKilos)
 {
     $apiKey = '47aa2183f5msh38cd0fce4a47025p1d3e85jsn3e3ea4b8426c'; // Replace with your actual API key
-
     $url = "https://unit-measurement-conversion.p.rapidapi.com/convert?type=weight&fromUnit=kilogram&toUnit=pound&fromValue=$weightInKilos";
-
     $curl = curl_init();
 
     curl_setopt_array($curl, [
         CURLOPT_URL => $url,
         CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_SSL_VERIFYPEER => false, // Add this
+        CURLOPT_SSL_VERIFYHOST => false, // Add this
         CURLOPT_HTTPHEADER => [
             "X-RapidAPI-Key: $apiKey",
             "X-RapidAPI-Host: unit-measurement-conversion.p.rapidapi.com"
         ]
     ]);
-
     $response = curl_exec($curl);
+    $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+    $curlError = curl_error($curl);
+    error_log("🔍 Debugging API Response:\nURL: $url\nHTTP Code: $httpCode\nResponse: $response\nError: $curlError");
     curl_close($curl);
-
     // Convert JSON string to PHP array
     $data = json_decode($response, true);
-
     // Check if the conversion was successful
     if (isset($data['value'])) {
         return $data['value'] . " " . $data['abbreviation']; // Example: "2.2046 lb"
@@ -224,23 +224,24 @@ function kilosToPoundsWebService($weightInKilos)
 function poundsToKilosWebService($weightInPounds)
 {
     $apiKey = '47aa2183f5msh38cd0fce4a47025p1d3e85jsn3e3ea4b8426c'; // 🔥 Replace with your actual API key
-
     $url = "https://unit-measurement-conversion.p.rapidapi.com/convert?type=weight&fromUnit=pound&toUnit=kilogram&fromValue=$weightInPounds";
-
     $curl = curl_init();
 
     curl_setopt_array($curl, [
         CURLOPT_URL => $url,
         CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_SSL_VERIFYPEER => false, // Add this
+        CURLOPT_SSL_VERIFYHOST => false, // Add this
         CURLOPT_HTTPHEADER => [
             "X-RapidAPI-Key: $apiKey",
             "X-RapidAPI-Host: unit-measurement-conversion.p.rapidapi.com"
         ]
     ]);
-
     $response = curl_exec($curl);
+    $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+    $curlError = curl_error($curl);
+    error_log("🔍 Debugging API Response:\nURL: $url\nHTTP Code: $httpCode\nResponse: $response\nError: $curlError");
     curl_close($curl);
-
     // Convert JSON string to PHP array
     $data = json_decode($response, true);
 
@@ -256,21 +257,23 @@ function poundsToKilosWebService($weightInPounds)
 function metersToFeetWebService($heightInMeters)
 {
     $apiKey = '47aa2183f5msh38cd0fce4a47025p1d3e85jsn3e3ea4b8426c'; // 🔥 Replace with your actual API key
-
     $url = "https://unit-measurement-conversion.p.rapidapi.com/convert?type=length&fromUnit=meter&toUnit=feet&fromValue=$heightInMeters";
-
     $curl = curl_init();
 
     curl_setopt_array($curl, [
         CURLOPT_URL => $url,
         CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_SSL_VERIFYPEER => false, // Add this
+        CURLOPT_SSL_VERIFYHOST => false, // Add this
         CURLOPT_HTTPHEADER => [
             "X-RapidAPI-Key: $apiKey",
             "X-RapidAPI-Host: unit-measurement-conversion.p.rapidapi.com"
         ]
     ]);
-
     $response = curl_exec($curl);
+    $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+    $curlError = curl_error($curl);
+    error_log("🔍 Debugging API Response:\nURL: $url\nHTTP Code: $httpCode\nResponse: $response\nError: $curlError");
     curl_close($curl);
 
     // Convert JSON string to PHP array
@@ -287,23 +290,24 @@ function metersToFeetWebService($heightInMeters)
 function feetToMetersWebService($heightInFeet)
 {
     $apiKey = '47aa2183f5msh38cd0fce4a47025p1d3e85jsn3e3ea4b8426c'; // 🔥 Replace with your actual API key
-
     $url = "https://unit-measurement-conversion.p.rapidapi.com/convert?type=length&fromUnit=feet&toUnit=meter&fromValue=$heightInFeet";
-
     $curl = curl_init();
 
     curl_setopt_array($curl, [
         CURLOPT_URL => $url,
         CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_SSL_VERIFYPEER => false, // Add this
+        CURLOPT_SSL_VERIFYHOST => false, // Add this
         CURLOPT_HTTPHEADER => [
             "X-RapidAPI-Key: $apiKey",
             "X-RapidAPI-Host: unit-measurement-conversion.p.rapidapi.com"
         ]
     ]);
-
     $response = curl_exec($curl);
+    $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+    $curlError = curl_error($curl);
+    error_log("🔍 Debugging API Response:\nURL: $url\nHTTP Code: $httpCode\nResponse: $response\nError: $curlError");
     curl_close($curl);
-
     // Convert JSON string to PHP array
     $data = json_decode($response, true);
 
@@ -333,7 +337,6 @@ function bmiCalculatorWebService($weight, $height, $unit = "metric")
         "X-RapidAPI-Key: $apiKey",
         "X-RapidAPI-Host: smart-body-mass-index-calculator-bmi.p.rapidapi.com"
     ];
-
     // Set API URL based on unit system
     if ($unit === "metric") {
         $heightInCm = $height * 100;
@@ -351,15 +354,12 @@ function bmiCalculatorWebService($weight, $height, $unit = "metric")
         CURLOPT_SSL_VERIFYPEER => false, // 🔥 Remove this in production (use Fix 2 from SSL guide)
         CURLOPT_HTTPHEADER => $headers
     ]);
-
     $response = curl_exec($curl);
     $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
     $curlError = curl_error($curl);
     curl_close($curl);
-
     // Debugging API response
     error_log("🔍 Debugging API Response:\nURL: $url\nHTTP Code: $httpCode\nResponse: $response\nError: $curlError");
-
     // Check if response is valid JSON
     if ($httpCode === 200 && $response) {
         $data = json_decode($response, true);
@@ -367,6 +367,5 @@ function bmiCalculatorWebService($weight, $height, $unit = "metric")
             return round($data["bmi"], 2);
         }
     }
-
     return false; // Return false if response format is unexpected
 }

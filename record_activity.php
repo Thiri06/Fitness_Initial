@@ -22,6 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
     // Load current data
     $defaultData = LoadDefaultData();
+
     if (count($defaultData) >= 4) {
         $startWeight = floatval($defaultData[1]);
         $units = $defaultData[3]; // Get the unit system (KG or LB)
@@ -29,15 +30,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Convert weight to kilograms if the unit is pounds
         $weightForCalculation = ($units == 'KG') ? $startWeight : PoundsToKilos($startWeight);
 
-        // Calculate calories burned and weight lost
+        // Calculate calories burned
         $caloriesBurned = CaloriesBurnedInCustomTime($METvalue, $weightForCalculation, $duration);
+        // Calculate weight lost
         $weightLost = WeightLostInKilosInCustomTime($METvalue, $weightForCalculation, $duration);
 
         // Convert weight lost to pounds if the unit is imperial
         if ($units == 'LB') {
             $weightLost = KilosToPounds($weightLost);
         }
-
         if (AddNewActivityRecord($activity, $duration, $caloriesBurned, $weightLost, $units)) {
             $_SESSION['activity_recorded'] = true;
             header('Location: main.php');

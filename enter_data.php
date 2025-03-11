@@ -37,6 +37,7 @@ if (isset($_POST['convert_unit'])) {
     }
     // Recalculate BMI based on the new units
     $bmi = ($units == 'KG') ? BMICalculator($startWeight, $startHeight) : BMICalculatorImperial($startWeight, $startHeight);
+    
     InsertNewUserData($startHeight, $startWeight, $bmi, $units);
 }
 
