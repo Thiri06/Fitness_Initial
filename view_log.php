@@ -10,6 +10,12 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
 
 // Load default data
 $defaultData = LoadDefaultData();
+
+if (isset($defaultData['error'])) {
+    include 'initial_setup_required.php';
+    exit;
+}
+
 if (count($defaultData) == 4) {
     $startHeight = $defaultData[0];
     $startWeight = $defaultData[1];

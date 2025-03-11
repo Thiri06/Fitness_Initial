@@ -37,7 +37,7 @@ if (isset($_POST['convert_unit'])) {
     }
     // Recalculate BMI based on the new units
     $bmi = ($units == 'KG') ? BMICalculator($startWeight, $startHeight) : BMICalculatorImperial($startWeight, $startHeight);
-    
+
     InsertNewUserData($startHeight, $startWeight, $bmi, $units);
 }
 
@@ -48,7 +48,7 @@ if (isset($_POST['save_measurements'])) {
 
     // Validate inputs
     if ($height <= 0 || $weight <= 0) {
-        $error = "Height and weight must be positive numbers.";
+        $error = "Height and weight must be positive numeric numbers.";
     } else {
         // Calculate BMI based on the current unit system
         $bmi = ($units == 'KG') ? BMICalculator($weight, $height) : BMICalculatorImperial($weight, $height);

@@ -23,13 +23,17 @@ function LoadDefaultData()
 {
     $file = __DIR__ . '/ExerciseData.txt';
     if (!file_exists($file)) {
-        return [];
+        return ['error' => 'No initial data found'];
     }
     $lines = file($file, FILE_IGNORE_NEW_LINES);
     if (count($lines) < 2) {
-        return [];
+        return ['error' => 'Missing initial measurements'];
     }
-    return explode(", ", $lines[1]);
+    $data = explode(", ", $lines[1]);
+    if (count($data) != 4 || !is_numeric($data[0]) || !is_numeric($data[1]) || !is_numeric($data[2])) {
+        return ['error' => 'Invalid initial measurements format'];
+    }
+    return $data;
 }
 
 // Function to insert new user data into ExerciseData.txt
@@ -89,17 +93,29 @@ function LoadActivityRecords()
 {
     $file = __DIR__ . '/ExerciseData.txt';
     if (!file_exists($file)) {
-        return [];
+        return ['error' => 'No activity records found'];
     }
     $lines = file($file, FILE_IGNORE_NEW_LINES);
     if (count($lines) < 4) {
-        return [];
+        return ['error' => 'No activities recorded yet'];
     }
-    // Line 3 is activity headers, so activity records start from line 4
+
     $activityRecords = array_slice($lines, 3);
-    // Remove any empty lines
-    $activityRecords = array_filter($activityRecords, function ($line) {
-        return trim($line) != '';
-    });
-    return $activityRecords;
+    $validRecords = [];
+
+    foreach ($activityRecords as $line) {
+        if (empty(trim($line))) continue;
+
+        $parts = explode(", ", $line);
+        if (
+            count($parts) == 5 &&
+            !empty(trim($parts[0])) &&
+            is_numeric(trim($parts[1])) &&
+            is_numeric(trim($parts[2])) &&
+            is_numeric(trim($parts[3]))
+        ) {
+            $validRecords[] = $line;
+        }
+    }
+    return $validRecords;
 }

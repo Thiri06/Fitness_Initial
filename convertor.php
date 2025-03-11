@@ -55,31 +55,38 @@ $conversionResult = ""; // Variable to store conversion result
 //     }
 // }
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
     $amount = floatval($_POST["amount"]);
-    $conversionType = $_POST["conversion_type"];
 
-    // Use the existing API functions with proper formatting
-    switch ($conversionType) {
-        case "kg_to_lb":
-            $result = kilosToPoundsWebService($amount);
-            $conversionResult = "$amount kg = $result";
-            break;
-        case "lb_to_kg":
-            $result = poundsToKilosWebService($amount);
-            $conversionResult = "$amount lb = $result";
-            break;
-        case "m_to_ft":
-            $result = metersToFeetWebService($amount);
-            $conversionResult = "$amount m = $result";
-            break;
-        case "ft_to_m":
-            $result = feetToMetersWebService($amount);
-            $conversionResult = "$amount ft = $result";
-            break;
-    }
+    // Add positive value validation
+    if ($amount <= 0) {
+        $conversionResult = "Please enter a positive value";
+    } else {
+        $conversionType = $_POST["conversion_type"];
 
-    if (!$result || $result == "Conversion error") {
-        $conversionResult = "Conversion error. Please try again.";
+        // Use the existing API functions with proper formatting
+        switch ($conversionType) {
+            case "kg_to_lb":
+                $result = kilosToPoundsWebService($amount);
+                $conversionResult = "$amount kg = $result";
+                break;
+            case "lb_to_kg":
+                $result = poundsToKilosWebService($amount);
+                $conversionResult = "$amount lb = $result";
+                break;
+            case "m_to_ft":
+                $result = metersToFeetWebService($amount);
+                $conversionResult = "$amount m = $result";
+                break;
+            case "ft_to_m":
+                $result = feetToMetersWebService($amount);
+                $conversionResult = "$amount ft = $result";
+                break;
+        }
+
+        if (!$result || $result == "Conversion error") {
+            $conversionResult = "Conversion error. Please try again.";
+        }
     }
 }
 
@@ -360,7 +367,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         </select>
 
                         <div class="mb-4">
-                            <input type="number" class="form-control" id="amount" step="0.01" name="amount" placeholder="Enter value" required>
+                            <input type="number" class="form-control" id="amount" step="0.01" name="amount" placeholder="Enter value" required min="0">
                         </div>
 
                         <button type="submit" class="btn btn-convert">

@@ -213,6 +213,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             color: #666;
             font-size: 0.9rem;
         }
+
+        .error {
+            color: red;
+            font-weight: bold;
+            background: rgba(83, 70, 254, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 25px;
+            text-align: center;
+            transition: all 0.3s ease
+        }
     </style>
 
     <script>

@@ -1,0 +1,15 @@
+{
+    "require-dev": {
+        "phpunit/phpunit": "^11.0"
+    },
+    "autoload": {
+        "classmap": [
+            "tests/"
+        ],
+        "files": [
+            "common.php",
+            "fileio.php",
+            "config.php"
+        ]
+    }
+}
